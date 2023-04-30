@@ -78,9 +78,7 @@ class GameEngine:
         self._clean()
 
     def _create(self):
-        create_text(self.ecs_world, self.interface_cfg["title"], self.interface_cfg["font"])
-        create_text(self.ecs_world, self.interface_cfg["subtitle"], self.interface_cfg["font"])
-
+        self._paused = False
         self._player_entity = create_player_square(self.ecs_world, self.player_cfg, self.level_01_cfg["player_spawn"])
         self._player_c_v = self.ecs_world.component_for_entity(self._player_entity, CVelocity)
         self._player_c_t = self.ecs_world.component_for_entity(self._player_entity, CTransform)
@@ -88,6 +86,11 @@ class GameEngine:
 
         create_enemy_spawner(self.ecs_world, self.level_01_cfg)
         create_input_player(self.ecs_world)
+
+        create_text(self.ecs_world, self.interface_cfg["title"], self.interface_cfg["font"])
+        create_text(self.ecs_world, self.interface_cfg["subtitle"], self.interface_cfg["font"])
+        create_text(self.ecs_world, self.interface_cfg["special"], self.interface_cfg["font"])
+        create_text(self.ecs_world, self.interface_cfg["score"], self.interface_cfg["font"])
 
     def _calculate_time(self):
         self.clock.tick(self.framerate)
@@ -155,3 +158,11 @@ class GameEngine:
         if c_input.name == "PLAYER_FIRE" and self.num_bullets < self.level_01_cfg["player_spawn"]["max_bullets"]:
             create_bullet(self.ecs_world, c_input.mouse_pos, self._player_c_t.pos,
                           self._player_c_s.area.size, self.bullet_cfg)
+       
+        if c_input.name == "PLAYER_PAUSE":
+            if self._paused == False and c_input.phase == CommandPhase.START:
+                self._paused = True
+                self._text = create_text(self.ecs_world, self.interface_cfg["pause"], self.interface_cfg["font"])
+            elif self._paused == True and c_input.phase == CommandPhase.START:
+                self._paused = False
+                self.ecs_world.delete_entity(self._text)

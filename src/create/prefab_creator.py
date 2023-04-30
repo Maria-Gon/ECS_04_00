@@ -40,8 +40,9 @@ def create_sprite(world: esper.World, pos: pygame.Vector2, vel: pygame.Vector2,
                         CSurface.from_surface(surface))
     return sprite_entity
 
-def create_text(world: esper.World, text_info: dict, font: str):
+def create_text(world: esper.World, text_info: dict, path: str):
     text_entity = world.create_entity()
+    font = ServiceLocator.fonts_service.get(path, text_info["size"])
     world.add_component(text_entity,
                         CTransform(pygame.Vector2(text_info["pos"]["x"],text_info["pos"]["y"])))
     world.add_component(text_entity,
@@ -99,6 +100,7 @@ def create_input_player(world: esper.World):
     input_right = world.create_entity()
     input_up = world.create_entity()
     input_down = world.create_entity()
+    input_pause = world.create_entity()
 
     world.add_component(input_left,
                         CInputCommand("PLAYER_LEFT", pygame.K_LEFT))
@@ -108,6 +110,8 @@ def create_input_player(world: esper.World):
                         CInputCommand("PLAYER_UP", pygame.K_UP))
     world.add_component(input_down,
                         CInputCommand("PLAYER_DOWN", pygame.K_DOWN))
+    world.add_component(input_pause,
+                        CInputCommand("PLAYER_PAUSE", pygame.K_p))
 
     input_fire = world.create_entity()
     world.add_component(input_fire,

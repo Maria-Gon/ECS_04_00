@@ -16,8 +16,7 @@ class CSurface:
     @classmethod
     def from_text(cls, text_info: dict, font: str):
         c_surf = cls(pygame.Vector2(0,0), pygame.Color(0,0,0))
-        t_font = pygame.font.Font(font, text_info["size"])
-        surf = t_font.render(text_info["text"], True, pygame.Color(text_info["color"]["r"],text_info["color"]["g"],text_info["color"]["b"]))
+        surf = font.render(text_info["text"], True, pygame.Color(text_info["color"]["r"],text_info["color"]["g"],text_info["color"]["b"]))
         c_surf.surf = surf
         c_surf.area = surf.get_rect()
         return c_surf

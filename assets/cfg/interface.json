@@ -24,6 +24,44 @@
             "y": 50
         },
         "size": 7
+    },"special": {
+        "text": "ESPECIAL",
+        "color": {
+            "r": 255,
+            "g": 255,
+            "b": 255
+        },
+        "pos": {
+            "x": 20,
+            "y": 300
+        },
+        "size": 7
+    },
+    "pause": {
+        "text": "PAUSADO",
+        "color": {
+            "r": 255,
+            "g": 255,
+            "b": 255
+        },
+        "pos": {
+            "x": 290,
+            "y": 180
+        },
+        "size": 9
+    },
+    "score": {
+        "text": "100%",
+        "color": {
+            "r": 0,
+            "g": 255,
+            "b": 0
+        },
+        "pos": {
+            "x": 20,
+            "y": 315
+        },
+        "size": 7
     },
     "font": "assets/fnt/PressStart2P.ttf"
 }
