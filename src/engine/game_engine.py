@@ -103,23 +103,24 @@ class GameEngine:
                 self.is_running = False
 
     def _update(self):
-        system_enemy_spawner(self.ecs_world, self.enemies_cfg, self.delta_time)
-        system_movement(self.ecs_world, self.delta_time)
+        
 
         system_screen_bounce(self.ecs_world, self.screen)
         system_screen_player(self.ecs_world, self.screen)
         system_screen_bullet(self.ecs_world, self.screen)
 
-        system_collision_enemy_bullet(self.ecs_world, self.explosion_cfg)
-        system_collision_player_enemy(self.ecs_world, self._player_entity,
-                                      self.level_01_cfg, self.explosion_cfg)
+        if self._paused == False:
+            system_enemy_spawner(self.ecs_world, self.enemies_cfg, self.delta_time)
+            system_movement(self.ecs_world, self.delta_time)
+            system_collision_enemy_bullet(self.ecs_world, self.explosion_cfg)
+            system_collision_player_enemy(self.ecs_world, self._player_entity,
+                                        self.level_01_cfg, self.explosion_cfg)
+            system_explosion_kill(self.ecs_world)
+            system_player_state(self.ecs_world)
+            system_animation(self.ecs_world, self.delta_time)
+            system_enemy_hunter_state(self.ecs_world, self._player_entity, self.enemies_cfg["Hunter"])
 
-        system_explosion_kill(self.ecs_world)
-
-        system_player_state(self.ecs_world)
-        system_enemy_hunter_state(self.ecs_world, self._player_entity, self.enemies_cfg["Hunter"])
-
-        system_animation(self.ecs_world, self.delta_time)
+        
 
         self.ecs_world._clear_dead_entities()
         self.num_bullets = len(self.ecs_world.get_component(CTagBullet))
@@ -155,7 +156,7 @@ class GameEngine:
             elif c_input.phase == CommandPhase.END:
                 self._player_c_v.vel.y -= self.player_cfg["input_velocity"]
 
-        if c_input.name == "PLAYER_FIRE" and self.num_bullets < self.level_01_cfg["player_spawn"]["max_bullets"]:
+        if c_input.name == "PLAYER_FIRE" and self.num_bullets < self.level_01_cfg["player_spawn"]["max_bullets"] and self._paused == False:
             create_bullet(self.ecs_world, c_input.mouse_pos, self._player_c_t.pos,
                           self._player_c_s.area.size, self.bullet_cfg)
        
