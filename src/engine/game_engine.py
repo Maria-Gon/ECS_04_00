@@ -26,7 +26,7 @@ from src.ecs.components.tags.c_tag_bullet import CTagBullet
 
 from src.ecs.components.c_input_command import CInputCommand, CommandPhase
 
-from src.create.prefab_creator import create_enemy_spawner, create_input_player, create_player_square, create_bullet
+from src.create.prefab_creator import create_enemy_spawner, create_input_player, create_player_square, create_bullet, create_text
 
 
 class GameEngine:
@@ -63,6 +63,8 @@ class GameEngine:
             self.bullet_cfg = json.load(bullet_file)
         with open("assets/cfg/explosion.json") as explosion_file:
             self.explosion_cfg = json.load(explosion_file)
+        with open("assets/cfg/interface.json") as interface_file:
+            self.interface_cfg = json.load(interface_file)
 
     async def run(self) -> None:
         self._create()
@@ -76,6 +78,9 @@ class GameEngine:
         self._clean()
 
     def _create(self):
+        create_text(self.ecs_world, self.interface_cfg["title"], self.interface_cfg["font"])
+        create_text(self.ecs_world, self.interface_cfg["subtitle"], self.interface_cfg["font"])
+
         self._player_entity = create_player_square(self.ecs_world, self.player_cfg, self.level_01_cfg["player_spawn"])
         self._player_c_v = self.ecs_world.component_for_entity(self._player_entity, CVelocity)
         self._player_c_t = self.ecs_world.component_for_entity(self._player_entity, CTransform)

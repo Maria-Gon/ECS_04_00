@@ -40,6 +40,16 @@ def create_sprite(world: esper.World, pos: pygame.Vector2, vel: pygame.Vector2,
                         CSurface.from_surface(surface))
     return sprite_entity
 
+def create_text(world: esper.World, text_info: dict, font: str):
+    text_entity = world.create_entity()
+    world.add_component(text_entity,
+                        CTransform(pygame.Vector2(text_info["pos"]["x"],text_info["pos"]["y"])))
+    world.add_component(text_entity,
+                        CVelocity(pygame.Vector2(0,0)))
+    world.add_component(text_entity,
+                        CSurface.from_text(text_info, font))
+    return text_entity
+
 
 def create_enemy_square(world: esper.World, pos: pygame.Vector2, enemy_info: dict):
     enemy_surface = ServiceLocator.images_service.get(enemy_info["image"])

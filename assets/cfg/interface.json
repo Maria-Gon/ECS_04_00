@@ -1,0 +1,29 @@
+{
+    "title": {
+        "text": "EJERCICIO 4",
+        "color": {
+            "r": 255,
+            "g": 255,
+            "b": 255
+        },
+        "pos": {
+            "x": 20,
+            "y": 30
+        },
+        "size": 10
+    },
+    "subtitle": {
+        "text": "Controles: Flechas, click normal, click derecho con balas en el mundo",
+        "color": {
+            "r": 255,
+            "g": 255,
+            "b": 0
+        },
+        "pos": {
+            "x": 20,
+            "y": 50
+        },
+        "size": 7
+    },
+    "font": "assets/fnt/PressStart2P.ttf"
+}
