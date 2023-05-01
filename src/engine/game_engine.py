@@ -3,6 +3,7 @@ import json
 import pygame
 import esper
 from src.ecs.systems.s_animation import system_animation
+from src.ecs.systems.s_bullet_special import system_bullet_special
 
 from src.ecs.systems.s_collision_player_enemy import system_collision_player_enemy
 from src.ecs.systems.s_collision_enemy_bullet import system_collision_enemy_bullet
@@ -26,7 +27,7 @@ from src.ecs.components.tags.c_tag_bullet import CTagBullet
 
 from src.ecs.components.c_input_command import CInputCommand, CommandPhase
 
-from src.create.prefab_creator import create_enemy_spawner, create_input_player, create_player_square, create_bullet, create_text
+from src.create.prefab_creator import create_bullet_special, create_enemy_spawner, create_input_player, create_player_square, create_bullet, create_text
 
 
 class GameEngine:
@@ -119,11 +120,15 @@ class GameEngine:
             system_player_state(self.ecs_world)
             system_animation(self.ecs_world, self.delta_time)
             system_enemy_hunter_state(self.ecs_world, self._player_entity, self.enemies_cfg["Hunter"])
+            
 
         
 
         self.ecs_world._clear_dead_entities()
-        self.num_bullets = len(self.ecs_world.get_component(CTagBullet))
+        self._bullets = self.ecs_world.get_component(CTagBullet)
+        for _, (c_b) in self._bullets:
+            if c_b.bullet_type == "Basic":
+                self.num_bullets = len(self._bullets)
 
     def _draw(self):
         self.screen.fill(self.bg_color)
@@ -158,7 +163,11 @@ class GameEngine:
 
         if c_input.name == "PLAYER_FIRE" and self.num_bullets < self.level_01_cfg["player_spawn"]["max_bullets"] and self._paused == False:
             create_bullet(self.ecs_world, c_input.mouse_pos, self._player_c_t.pos,
-                          self._player_c_s.area.size, self.bullet_cfg)
+                          self._player_c_s.area.size, self.bullet_cfg["basic"])
+        
+        if c_input.name == "PLAYER_SPECIAL" and self._paused == False:
+            #self.ahora = 
+            system_bullet_special(self.ecs_world, self.bullet_cfg["special"])
        
         if c_input.name == "PLAYER_PAUSE":
             if self._paused == False and c_input.phase == CommandPhase.START:

@@ -114,8 +114,11 @@ def create_input_player(world: esper.World):
                         CInputCommand("PLAYER_PAUSE", pygame.K_p))
 
     input_fire = world.create_entity()
+    input_special = world.create_entity()
     world.add_component(input_fire,
                         CInputCommand("PLAYER_FIRE", pygame.BUTTON_LEFT))
+    world.add_component(input_special,
+                        CInputCommand("PLAYER_SPECIAL", pygame.BUTTON_RIGHT))
 
 
 def create_bullet(world: esper.World,
@@ -131,9 +134,22 @@ def create_bullet(world: esper.World,
     vel = vel.normalize() * bullet_info["velocity"]
 
     bullet_entity = create_sprite(world, pos, vel, bullet_surface)
-    world.add_component(bullet_entity, CTagBullet())
+    world.add_component(bullet_entity, CTagBullet("Basic"))
     ServiceLocator.sounds_service.play(bullet_info["sound"])
 
+def create_bullet_special(world: esper.World,
+                  bullet_pos: pygame.Vector2,
+                  special_vel: pygame.Vector2,
+                  bullet_info: dict):
+    
+    bullet_surface =ServiceLocator.images_service.get(bullet_info["image"])
+    pos = pygame.Vector2(bullet_pos[0], bullet_pos[1])
+    vel = special_vel
+    vel = vel.normalize() * bullet_info["velocity"]
+
+    bullet_entity = create_sprite(world, pos, vel, bullet_surface)
+    world.add_component(bullet_entity, CTagBullet("Special"))
+    ServiceLocator.sounds_service.play(bullet_info["sound"])
 
 def create_explosion(world: esper.World, pos: pygame.Vector2, explosion_info: dict):
     explosion_surface = ServiceLocator.images_service.get(explosion_info["image"])
