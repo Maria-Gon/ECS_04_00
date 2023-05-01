@@ -50,7 +50,7 @@ class GameEngine:
                                      self.window_cfg["bg_color"]["b"])
         self.ecs_world = esper.World()
 
-        self.num_bullets = 0
+        
 
     def _load_config_files(self):
         with open("assets/cfg/window.json", encoding="utf-8") as window_file:
@@ -83,6 +83,8 @@ class GameEngine:
         self._paused = False
         self._score = False
         self.num = 0
+        self._num_bullets = 0
+        self.num_bullets2 = 0
         self._last_special = pygame.time.get_ticks()
         self._player_entity = create_player_square(self.ecs_world, self.player_cfg, self.level_01_cfg["player_spawn"])
         self._player_c_v = self.ecs_world.component_for_entity(self._player_entity, CVelocity)
@@ -136,8 +138,12 @@ class GameEngine:
         self.ecs_world._clear_dead_entities()
         self._bullets = self.ecs_world.get_component(CTagBullet)
         for _, (c_b) in self._bullets:
-            if c_b.bullet_type == "Basic":
-                self.num_bullets = len(self._bullets)
+                if c_b.bullet_type == "Basic":
+                    self._num_bullets = len(self.ecs_world.get_component(CTagBullet))
+                if c_b.bullet_type == "Special":
+                    self.num_bullets2 = len(self.ecs_world.get_component(CTagBullet))
+                    if self.num_bullets2 == 16:
+                        self._num_bullets = 0
 
     def _draw(self):
         self.screen.fill(self.bg_color)
@@ -170,9 +176,9 @@ class GameEngine:
             elif c_input.phase == CommandPhase.END:
                 self._player_c_v.vel.y -= self.player_cfg["input_velocity"]
 
-        if c_input.name == "PLAYER_FIRE" and self.num_bullets < self.level_01_cfg["player_spawn"]["max_bullets"] and self._paused == False:
+        if c_input.name == "PLAYER_FIRE" and self._num_bullets < self.level_01_cfg["player_spawn"]["max_bullets"] and self._paused == False:
             create_bullet(self.ecs_world, c_input.mouse_pos, self._player_c_t.pos,
-                          self._player_c_s.area.size, self.bullet_cfg["basic"])
+                            self._player_c_s.area.size, self.bullet_cfg["basic"])
         
         if c_input.name == "PLAYER_SPECIAL" and self._paused == False:
             self.ahora = pygame.time.get_ticks()
