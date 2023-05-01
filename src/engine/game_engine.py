@@ -10,6 +10,7 @@ from src.ecs.systems.s_collision_enemy_bullet import system_collision_enemy_bull
 
 from src.ecs.systems.s_enemy_spawner import system_enemy_spawner
 from src.ecs.systems.s_input_player import system_input_player
+from src.ecs.systems.s_kill_special import system_kill_special
 from src.ecs.systems.s_loading_bar import system_loading_bar
 from src.ecs.systems.s_movement import system_movement
 from src.ecs.systems.s_rendering import system_rendering
@@ -131,6 +132,8 @@ class GameEngine:
                 if self.num <= 100:
                     system_loading_bar(self.ecs_world, self.num, self.interface_cfg["score"], self.interface_cfg["font"])
                     self.num += 1
+                if self.num == 25:
+                    system_kill_special(self.ecs_world)
                 if self.num == 101:
                     self.num = 0
                     self._score = False

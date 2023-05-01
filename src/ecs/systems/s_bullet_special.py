@@ -7,18 +7,12 @@ from src.ecs.components.tags.c_tag_bullet import CTagBullet
 
 
 def system_bullet_special(world: esper.World, bullet_info: dict):
-    cont = 0
-
     components_bullet = world.get_components(CTransform, CTagBullet)
     for bullet_entity, (c_b_t, b_t) in components_bullet:
-        if (True):
-                world.delete_entity(bullet_entity, True)
-                cont+=1
         if (b_t.bullet_type == "Basic"):
+            world.delete_entity(bullet_entity, True)
             create_bullet_special(world, c_b_t.pos, pygame.Vector2(-100,-100), bullet_info)
             create_bullet_special(world, c_b_t.pos, pygame.Vector2(100,100), bullet_info)
             create_bullet_special(world, c_b_t.pos, pygame.Vector2(-100,100), bullet_info)
             create_bullet_special(world, c_b_t.pos, pygame.Vector2(100,-100), bullet_info)
-            
-        else:
-            print("no entra")
+
