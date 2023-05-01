@@ -13,8 +13,6 @@ def system_loading_bar(world: esper.World, num: int, text_info: dict, path: str,
         surf =font.render(str(num)+"%", True, pygame.Color(text_info["color"]["r"],text_info["color"]["g"],text_info["color"]["b"]))
         c_s.surf = surf
         c_s.area = surf.get_rect()
-        screen.blit(c_s.surf, c_s.area)
-    pygame.display.flip()
     
 
 

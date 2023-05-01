@@ -16,5 +16,3 @@ def system_bullet_special(world: esper.World, bullet_info: dict):
             create_bullet_special(world, c_b_t.pos, pygame.Vector2(-100,100), bullet_info)
             create_bullet_special(world, c_b_t.pos, pygame.Vector2(100,-100), bullet_info)
             world.delete_entity(bullet_entity)
-        if (b_t.bullet_type == "Special"):
-            world.delete_entity(bullet_entity)
