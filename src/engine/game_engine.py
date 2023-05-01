@@ -28,7 +28,7 @@ from src.ecs.components.tags.c_tag_bullet import CTagBullet
 
 from src.ecs.components.c_input_command import CInputCommand, CommandPhase
 
-from src.create.prefab_creator import create_bullet_special, create_enemy_spawner, create_input_player, create_load_bar, create_player_square, create_bullet, create_text, create_text_special
+from src.create.prefab_creator import create_bullet_special, create_enemy_spawner, create_input_player, create_player_square, create_bullet, create_text, create_text_special
 
 
 class GameEngine:
@@ -83,7 +83,6 @@ class GameEngine:
         self._paused = False
         self._score = False
         self._last_special = pygame.time.get_ticks()
-        create_load_bar(self.ecs_world)
         self._player_entity = create_player_square(self.ecs_world, self.player_cfg, self.level_01_cfg["player_spawn"])
         self._player_c_v = self.ecs_world.component_for_entity(self._player_entity, CVelocity)
         self._player_c_t = self.ecs_world.component_for_entity(self._player_entity, CTransform)
@@ -185,7 +184,9 @@ class GameEngine:
                 system_bullet_special(self.ecs_world, self.bullet_cfg["special"])
                 num = 0
                 while num <= 100:
+                    self.ecs_world.process()
                     system_loading_bar(self.ecs_world, num, self.interface_cfg["score"], self.interface_cfg["font"], self.screen)
+                    #time.sleep(0.05)
                     num += 1
                 self._last_special = self.ahora
        
