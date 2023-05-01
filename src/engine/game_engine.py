@@ -10,6 +10,7 @@ from src.ecs.systems.s_collision_enemy_bullet import system_collision_enemy_bull
 
 from src.ecs.systems.s_enemy_spawner import system_enemy_spawner
 from src.ecs.systems.s_input_player import system_input_player
+from src.ecs.systems.s_loading_bar import system_loading_bar
 from src.ecs.systems.s_movement import system_movement
 from src.ecs.systems.s_rendering import system_rendering
 from src.ecs.systems.s_screen_bounce import system_screen_bounce
@@ -27,7 +28,7 @@ from src.ecs.components.tags.c_tag_bullet import CTagBullet
 
 from src.ecs.components.c_input_command import CInputCommand, CommandPhase
 
-from src.create.prefab_creator import create_bullet_special, create_enemy_spawner, create_input_player, create_player_square, create_bullet, create_text
+from src.create.prefab_creator import create_bullet_special, create_enemy_spawner, create_input_player, create_load_bar, create_player_square, create_bullet, create_text, create_text_special
 
 
 class GameEngine:
@@ -80,6 +81,9 @@ class GameEngine:
 
     def _create(self):
         self._paused = False
+        self._score = False
+        self._last_special = pygame.time.get_ticks()
+        create_load_bar(self.ecs_world)
         self._player_entity = create_player_square(self.ecs_world, self.player_cfg, self.level_01_cfg["player_spawn"])
         self._player_c_v = self.ecs_world.component_for_entity(self._player_entity, CVelocity)
         self._player_c_t = self.ecs_world.component_for_entity(self._player_entity, CTransform)
@@ -91,7 +95,7 @@ class GameEngine:
         create_text(self.ecs_world, self.interface_cfg["title"], self.interface_cfg["font"])
         create_text(self.ecs_world, self.interface_cfg["subtitle"], self.interface_cfg["font"])
         create_text(self.ecs_world, self.interface_cfg["special"], self.interface_cfg["font"])
-        create_text(self.ecs_world, self.interface_cfg["score"], self.interface_cfg["font"])
+        self._score_entity = create_text_special(self.ecs_world, self.interface_cfg["score"], self.interface_cfg["font"], self.interface_cfg["score"]["text"])
 
     def _calculate_time(self):
         self.clock.tick(self.framerate)
@@ -104,7 +108,6 @@ class GameEngine:
                 self.is_running = False
 
     def _update(self):
-        
 
         system_screen_bounce(self.ecs_world, self.screen)
         system_screen_player(self.ecs_world, self.screen)
@@ -120,7 +123,18 @@ class GameEngine:
             system_player_state(self.ecs_world)
             system_animation(self.ecs_world, self.delta_time)
             system_enemy_hunter_state(self.ecs_world, self._player_entity, self.enemies_cfg["Hunter"])
+
             
+            
+            if self._score == True:
+                num = 0
+                while num < 100:
+                    if self._score == True:
+                        self._score = False
+                        
+                    self._score = True
+                    num +=1
+                
 
         
 
@@ -166,8 +180,14 @@ class GameEngine:
                           self._player_c_s.area.size, self.bullet_cfg["basic"])
         
         if c_input.name == "PLAYER_SPECIAL" and self._paused == False:
-            #self.ahora = 
-            system_bullet_special(self.ecs_world, self.bullet_cfg["special"])
+            self.ahora = pygame.time.get_ticks()
+            if (self.ahora - self._last_special) > 2500:
+                system_bullet_special(self.ecs_world, self.bullet_cfg["special"])
+                num = 0
+                while num <= 100:
+                    system_loading_bar(self.ecs_world, num, self.interface_cfg["score"], self.interface_cfg["font"], self.screen)
+                    num += 1
+                self._last_special = self.ahora
        
         if c_input.name == "PLAYER_PAUSE":
             if self._paused == False and c_input.phase == CommandPhase.START:

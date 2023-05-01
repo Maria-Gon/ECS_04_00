@@ -14,6 +14,7 @@ from src.ecs.components.tags.c_tag_explosion import CTagExplosion
 from src.ecs.components.c_animation import CAnimation
 from src.ecs.components.c_player_state import CPlayerState
 from src.ecs.components.c_enemy_hunter_state import CEnemyHunterState
+from src.ecs.components.tags.c_tag_score import CTagScore
 from src.engine.service_locator import ServiceLocator
 
 
@@ -48,7 +49,19 @@ def create_text(world: esper.World, text_info: dict, path: str):
     world.add_component(text_entity,
                         CVelocity(pygame.Vector2(0,0)))
     world.add_component(text_entity,
-                        CSurface.from_text(text_info, font))
+                        CSurface.from_text(text_info, font, text_info["text"]))
+    return text_entity
+
+def create_text_special(world: esper.World, text_info: dict, path: str, text: str):
+    text_entity = world.create_entity()
+    font = ServiceLocator.fonts_service.get(path, text_info["size"])
+    world.add_component(text_entity,
+                        CTransform(pygame.Vector2(text_info["pos"]["x"],text_info["pos"]["y"])))
+    world.add_component(text_entity,
+                        CVelocity(pygame.Vector2(0,0)))
+    world.add_component(text_entity,
+                        CSurface.from_text(text_info, font, text))
+    world.add_component(text_entity, CTagScore())
     return text_entity
 
 

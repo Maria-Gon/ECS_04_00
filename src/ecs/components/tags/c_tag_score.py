@@ -1,0 +1,3 @@
+class CTagScore:
+    def __init__(self) -> None:
+        pass
