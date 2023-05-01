@@ -129,6 +129,9 @@ class GameEngine:
                 if self.num <= 100:
                     system_loading_bar(self.ecs_world, self.num, self.interface_cfg["score"], self.interface_cfg["font"])
                     self.num += 1
+                if self.num == 101:
+                    self.num = 0
+                    self._score = False
                 
         self.ecs_world._clear_dead_entities()
         self._bullets = self.ecs_world.get_component(CTagBullet)
