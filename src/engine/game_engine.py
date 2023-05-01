@@ -127,7 +127,7 @@ class GameEngine:
             
             if self._score == True:
                 if self.num <= 100:
-                    system_loading_bar(self.ecs_world, self.num, self.interface_cfg["score"], self.interface_cfg["font"], self.screen)
+                    system_loading_bar(self.ecs_world, self.num, self.interface_cfg["score"], self.interface_cfg["font"])
                     self.num += 1
                 
         self.ecs_world._clear_dead_entities()
