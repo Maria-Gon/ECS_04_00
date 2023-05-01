@@ -82,6 +82,7 @@ class GameEngine:
     def _create(self):
         self._paused = False
         self._score = False
+        self.num = 0
         self._last_special = pygame.time.get_ticks()
         self._player_entity = create_player_square(self.ecs_world, self.player_cfg, self.level_01_cfg["player_spawn"])
         self._player_c_v = self.ecs_world.component_for_entity(self._player_entity, CVelocity)
@@ -107,7 +108,6 @@ class GameEngine:
                 self.is_running = False
 
     def _update(self):
-
         system_screen_bounce(self.ecs_world, self.screen)
         system_screen_player(self.ecs_world, self.screen)
         system_screen_bullet(self.ecs_world, self.screen)
@@ -126,17 +126,10 @@ class GameEngine:
             
             
             if self._score == True:
-                num = 0
-                while num < 100:
-                    if self._score == True:
-                        self._score = False
-                        
-                    self._score = True
-                    num +=1
+                if self.num <= 100:
+                    system_loading_bar(self.ecs_world, self.num, self.interface_cfg["score"], self.interface_cfg["font"], self.screen)
+                    self.num += 1
                 
-
-        
-
         self.ecs_world._clear_dead_entities()
         self._bullets = self.ecs_world.get_component(CTagBullet)
         for _, (c_b) in self._bullets:
@@ -182,14 +175,9 @@ class GameEngine:
             self.ahora = pygame.time.get_ticks()
             if (self.ahora - self._last_special) > 2500:
                 system_bullet_special(self.ecs_world, self.bullet_cfg["special"])
-                num = 0
-                while num <= 100:
-                    self.ecs_world.process()
-                    system_loading_bar(self.ecs_world, num, self.interface_cfg["score"], self.interface_cfg["font"], self.screen)
-                    #time.sleep(0.05)
-                    num += 1
+                self._score = True
                 self._last_special = self.ahora
-       
+
         if c_input.name == "PLAYER_PAUSE":
             if self._paused == False and c_input.phase == CommandPhase.START:
                 self._paused = True
